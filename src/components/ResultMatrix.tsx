@@ -69,14 +69,16 @@ export const ResultMatrix = ({
           ))}
         </Row>
       </div>
-      <div className="flex flex-col">
-        <Statistic
-          title="Харьцуулалтын оноо"
-          value={table.scoreMatrix[first.length][second.length]}
-        />
-        <Statistic title="Харьцуулалт" value={result.alignedS1} />
-        <Statistic value={result.alignedS2} />
-      </div>
+      {first.length > 0 && second.length > 0 && (
+        <div className="flex flex-col">
+          <Statistic
+            title="Харьцуулалтын оноо"
+            value={table.scoreMatrix[first.length][second.length]}
+          />
+          <Statistic title="Харьцуулалт" value={result.alignedS1} />
+          <Statistic value={result.alignedS2} />
+        </div>
+      )}
     </div>
   );
 };
