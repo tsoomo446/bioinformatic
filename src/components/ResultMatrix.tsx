@@ -1,5 +1,4 @@
-import { calculate } from "@/calculations/calculation";
-import { Blosum62 } from "@/calculations/matrix";
+import { calculate, generateAlignedStrings } from "@/calculations/calculation";
 import { AlgoType, MatrixType } from "@/pages";
 import { Col, Row, Statistic } from "antd";
 import React from "react";
@@ -17,12 +16,20 @@ export const ResultMatrix = ({
   algoType: AlgoType;
   gapPenalty: number;
 }) => {
-  const table: number[][] = calculate({
+  const table = calculate({
     s1: first,
     s2: second,
     penalty: gapPenalty,
     algo: algoType,
     matrix: matrixType,
+  });
+
+  const result = generateAlignedStrings({
+    s1: first,
+    s2: second,
+    tracebackMatrix: table.tracebackMatrix,
+    maxI: first.length,
+    maxJ: second.length,
   });
 
   return (
@@ -35,16 +42,16 @@ export const ResultMatrix = ({
               /
             </div>
             {second.split("").map((char, index) => (
-              <div key={1} className="w-10 h-10 text-center align-middle">
+              <div key={1} className="w-10 h-10 text-center align-middle p-2">
                 {char}
               </div>
             ))}
           </Col>
-          {table.map((row, rowIndex) => (
+          {table.scoreMatrix.map((row, rowIndex) => (
             <Col key={rowIndex}>
               <div
                 key={rowIndex}
-                className="w-10 h-10 text-center align-middle"
+                className="w-10 h-10 text-center align-middle p-2"
               >
                 {rowIndex !== 0 ? first[rowIndex - 1] : "/"}
               </div>
@@ -52,7 +59,7 @@ export const ResultMatrix = ({
                 <>
                   <div
                     key={cellIndex}
-                    className="w-10 h-10 text-center align-middle border-[#d9d9d9] border-2 rounded-xl"
+                    className={`w-10 h-10 text-center align-middle border-["#d9d9d9"] border-[1px] p-2 rounded-xl`}
                   >
                     {cell}
                   </div>
@@ -62,11 +69,13 @@ export const ResultMatrix = ({
           ))}
         </Row>
       </div>
-      <div className="flex">
+      <div className="flex flex-col">
         <Statistic
           title="Харьцуулалтын оноо"
-          value={table[first.length][second.length]}
+          value={table.scoreMatrix[first.length][second.length]}
         />
+        <Statistic title="Харьцуулалт" value={result.alignedS1} />
+        <Statistic value={result.alignedS2} />
       </div>
     </div>
   );
