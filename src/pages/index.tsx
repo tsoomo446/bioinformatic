@@ -18,7 +18,7 @@ function Home() {
   const [second, setSecond] = useState<string>("");
   const [matrix, setMatrix] = useState<MatrixType>(MatrixType.BLOSUM62);
   const [type, setType] = useState<AlgoType>(AlgoType.GLOBAL);
-  const [penalty, setPenalty] = useState<number>(6);
+  const [penalty, setPenalty] = useState<number>(-6);
   return (
     <Row gutter={[24, 24]}>
       <Col span={8}>
@@ -66,8 +66,8 @@ function Home() {
               Хоосон зайн шугаман торгууль
             </Typography.Title>
             <InputNumber
-              min={0}
-              max={15}
+              min={-15}
+              max={0}
               defaultValue={penalty}
               onChange={(v) => {
                 if (v) {
@@ -82,7 +82,13 @@ function Home() {
         <Typography.Title level={5} className="text-center">
           Үр дүнгийн матриц
         </Typography.Title>
-        <ResultMatrix first={first} second={second} />
+        <ResultMatrix
+          first={first}
+          second={second}
+          gapPenalty={penalty}
+          algoType={type}
+          matrixType={matrix}
+        />
       </Col>
     </Row>
   );
