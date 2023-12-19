@@ -48,9 +48,7 @@ function Home() {
               <Radio.Button value={AlgoType.GLOBAL}>
                 Needleman-Wunsch
               </Radio.Button>
-              <Radio.Button value={AlgoType.LOCAL} disabled={true}>
-                Smith-Waterman
-              </Radio.Button>
+              <Radio.Button value={AlgoType.LOCAL}>Smith-Waterman</Radio.Button>
             </Radio.Group>
           </div>
           <div>

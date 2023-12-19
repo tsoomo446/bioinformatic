@@ -3,6 +3,16 @@ import { AlgoType, MatrixType } from "@/pages";
 import { Col, Row, Statistic } from "antd";
 import React from "react";
 
+function isInSolution(
+  rowIndex: number,
+  cellIndex: number,
+  solutionPath: { row: number; col: number }[]
+): boolean {
+  return solutionPath.some(
+    (point) => point.row === rowIndex && point.col === cellIndex
+  );
+}
+
 export const ResultMatrix = ({
   first,
   second,
@@ -59,7 +69,15 @@ export const ResultMatrix = ({
                 <>
                   <div
                     key={cellIndex}
-                    className={`w-10 h-10 text-center align-middle border-["#d9d9d9"] border-[1px] p-2 rounded-xl`}
+                    className={`w-10 h-10 text-center align-middle border-["#d9d9d9"] border-[1px] p-2 rounded-xl  ${
+                      isInSolution(
+                        rowIndex,
+                        cellIndex,
+                        table.solutionPath ?? []
+                      )
+                        ? "bg-[#1890ff]"
+                        : ""
+                    }`}
                   >
                     {cell}
                   </div>

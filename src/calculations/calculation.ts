@@ -1,6 +1,5 @@
 import { AlgoType, MatrixType } from "@/pages";
 import { Blosum62 } from "./matrix";
-import { constants } from "fs";
 
 export const calculate = ({
   s1,
@@ -17,6 +16,7 @@ export const calculate = ({
 }): {
   scoreMatrix: number[][];
   tracebackMatrix: string[][];
+  solutionPath: { row: number; col: number }[];
 } => {
   if (algo === AlgoType.GLOBAL) {
     return NeedlemanWunsch({ s1, s2, penalty, matrix });
@@ -36,7 +36,11 @@ const NeedlemanWunsch = ({
   s2: string;
   penalty: number;
   matrix: MatrixType;
-}): { scoreMatrix: number[][]; tracebackMatrix: string[][] } => {
+}): {
+  scoreMatrix: number[][];
+  tracebackMatrix: string[][];
+  solutionPath: { row: number; col: number }[];
+} => {
   const n = s1.length;
   const m = s2.length;
 
@@ -80,8 +84,25 @@ const NeedlemanWunsch = ({
       }
     }
   }
+  let currentCell = { row: n, col: m };
+  let solutionPath: { row: number; col: number }[] = [];
+  // Perform the traceback operation
+  while (scoreMatrix[currentCell.row][currentCell.col] !== 0) {
+    solutionPath.push(currentCell);
+    switch (tracebackMatrix[currentCell.row][currentCell.col]) {
+      case "D":
+        currentCell = { row: currentCell.row - 1, col: currentCell.col - 1 };
+        break;
+      case "L":
+        currentCell = { row: currentCell.row, col: currentCell.col - 1 };
+        break;
+      case "U":
+        currentCell = { row: currentCell.row - 1, col: currentCell.col };
+        break;
+    }
+  }
 
-  return { scoreMatrix, tracebackMatrix };
+  return { scoreMatrix, tracebackMatrix, solutionPath };
 };
 
 const SmithWaterman = ({
@@ -97,11 +118,13 @@ const SmithWaterman = ({
 }): {
   scoreMatrix: number[][];
   tracebackMatrix: string[][];
+  solutionPath: { row: number; col: number }[];
 } => {
   const n = s1.length;
   const m = s2.length;
   const scoreMatrix: number[][] = [];
   const tracebackMatrix: string[][] = [];
+  const solutionPath: { row: number; col: number }[] = [];
 
   for (let i = 0; i <= n; i++) {
     scoreMatrix[i] = [];
@@ -115,7 +138,7 @@ const SmithWaterman = ({
   let maxScore = 0;
   let maxI = 0;
   let maxJ = 0;
-
+  let currentCell = { row: 0, col: 0 };
   for (let i = 1; i <= n; i++) {
     for (let j = 1; j <= m; j++) {
       const match = scoreMatrix[i - 1][j - 1] + Blosum62[s1[i - 1]][s2[j - 1]];
@@ -135,10 +158,27 @@ const SmithWaterman = ({
         maxScore = scoreMatrix[i][j];
         maxI = i;
         maxJ = j;
+        currentCell = { row: i, col: j };
       }
     }
   }
-  return { scoreMatrix, tracebackMatrix };
+
+  // Perform the traceback operation
+  while (scoreMatrix[currentCell.row][currentCell.col] !== 0) {
+    solutionPath.push(currentCell);
+    switch (tracebackMatrix[currentCell.row][currentCell.col]) {
+      case "D":
+        currentCell = { row: currentCell.row - 1, col: currentCell.col - 1 };
+        break;
+      case "L":
+        currentCell = { row: currentCell.row, col: currentCell.col - 1 };
+        break;
+      case "U":
+        currentCell = { row: currentCell.row - 1, col: currentCell.col };
+        break;
+    }
+  }
+  return { scoreMatrix, tracebackMatrix, solutionPath };
 };
 
 export const generateAlignedStrings = ({
