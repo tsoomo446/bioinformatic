@@ -5,7 +5,9 @@ export const Header = () => {
   return (
     <>
       <div className="w-full h-8 p-8 text-center">
-        <Typography.Title level={5}>Хос дарааллын харьцуулалт</Typography.Title>
+        <Typography.Title level={5}>
+          Биоинформатик - Дарааллын харьцуулалт
+        </Typography.Title>
       </div>
       <Divider />
     </>

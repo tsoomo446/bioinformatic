@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "antd": "^5.11.1",
+    "bioseq": "^0.1.5",
     "next": "13.5.6",
     "react": "^18",
     "react-dom": "^18"
